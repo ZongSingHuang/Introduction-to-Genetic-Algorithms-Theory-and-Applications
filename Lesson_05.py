@@ -6,7 +6,7 @@ Created on Tue Aug  3 09:54:43 2021
 """
 
 # =============================================================================
-# #適應值計算+選擇(沒有迴圈)
+# #選擇
 # =============================================================================
 
 import numpy as np
@@ -20,13 +20,6 @@ def fitness(X):
     return F
 
 def selection(X, F):
-    P = X.shape[0]
-    
-    # 修正適應值包含負值BUG
-# =============================================================================
-    if F.min()<0:
-        F = F + np.abs( F.min() )
-# =============================================================================
     F_sum = np.sum(F)
     
     normalized_F = F/F_sum
@@ -37,8 +30,8 @@ def selection(X, F):
     cumsum_F = np.hstack([cumsum_F[1:], 0.0])
     print(cumsum_F)
     
-    new_idx = -1*np.zeros(P).astype(int)
-    r = np.random.uniform(size=[P])
+    new_idx = -1*np.zeros(2).astype(int)
+    r = np.random.uniform(size=[2])
     print(r)
     for i in range(len(r)):
         for j in range(len(cumsum_F)):
@@ -47,16 +40,15 @@ def selection(X, F):
                 break
     
     print(new_idx)
-    p1 = X[new_idx][:int(P/2)]
-    p2 = X[new_idx][int(P/2):]
+    p1, p2 = X[new_idx]
     
     return p1, p2
 
 # 參數設定
 P = 10
 D = 5
-lb = -10*np.ones(D)
-ub = 10*np.ones(D)
+lb = 0*np.ones(D)
+ub = 30*np.ones(D)
 
 # 初始化
 X = np.random.randint(low=lb, high=ub, size=[P, D])

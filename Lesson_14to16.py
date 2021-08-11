@@ -6,7 +6,7 @@ Created on Tue Aug 10 18:42:00 2021
 """
 
 # =============================================================================
-# #適應值計算+選擇+交配(沒有迴圈)
+# #適應值計算+選擇+交配+突變+菁英策略(沒有迴圈)
 # =============================================================================
 
 import numpy as np
@@ -24,6 +24,7 @@ def selection(X, F):
     
     if F.min()<0:
         F = F + np.abs( F.min() )
+    # F = 1/F # 如果是min problem，則開啟
     F_sum = np.sum(F)
     
     normalized_F = F/F_sum
@@ -80,10 +81,37 @@ def crossover(p1, p2, pc, species='single_point'):
     
     return c1, c2
 
+def mutation(c1, pm, lb, ub):
+    P = c1.shape[0]
+    D = c1.shape[1]
+    
+    for i in range(P):
+        for j in range(D):
+            r = np.random.uniform()
+            if r<=pm:
+                c1[i, j] = np.random.randint(low=lb[j], high=ub[j])
+    
+    return c1
+
+def elitism(X, F, new_X, new_F, er):
+    M = X.shape[0]
+    elitism_size = int(M*er)
+    new_X2 = new_X.copy()
+    new_F2 = new_F.copy()
+    
+    idx = np.argsort(F)
+    elitism_idx = idx[:elitism_size]
+    new_X2[:elitism_size] = X[elitism_idx]
+    new_F2[:elitism_size] = F[elitism_idx]
+    
+    return new_X2, new_F2
+
 # 參數設定
 P = 10
 D = 5
 pc = 0.5
+pm = 0.5
+er = 0.1
 lb = -10*np.ones(D)
 ub = 10*np.ones(D)
 
@@ -96,3 +124,15 @@ p1, p2 = selection(X, F)
 
 # 交配
 c1, c2 = crossover(p1, p2, pc, 'single_point')
+
+# 突變
+c1 = mutation(c1, pm, lb, ub)
+c2 = mutation(c2, pm, lb, ub)
+new_X = np.vstack([c1, c2])
+np.random.shuffle(new_X)
+
+# 適應值計算
+new_F = fitness(new_X)
+
+# 菁英
+new_X, new_F = elitism(X, F, new_X, new_F, er)

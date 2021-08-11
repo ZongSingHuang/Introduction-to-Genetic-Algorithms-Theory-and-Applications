@@ -21,12 +21,6 @@ def fitness(X):
 
 def selection(X, F):
     P = X.shape[0]
-    
-    # 修正適應值包含負值BUG
-# =============================================================================
-    if F.min()<0:
-        F = F + np.abs( F.min() )
-# =============================================================================
     F_sum = np.sum(F)
     
     normalized_F = F/F_sum
@@ -55,8 +49,8 @@ def selection(X, F):
 # 參數設定
 P = 10
 D = 5
-lb = -10*np.ones(D)
-ub = 10*np.ones(D)
+lb = 0*np.ones(D)
+ub = 30*np.ones(D)
 
 # 初始化
 X = np.random.randint(low=lb, high=ub, size=[P, D])

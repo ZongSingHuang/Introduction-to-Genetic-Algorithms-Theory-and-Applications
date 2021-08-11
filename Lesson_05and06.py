@@ -16,6 +16,7 @@ def fitness(X):
     return F
 
 def selection(X, F):
+    P = X.shape[0]
     F_sum = np.sum(F)
     
     normalized_F = F/F_sum
@@ -26,8 +27,8 @@ def selection(X, F):
     cumsum_F = np.hstack([cumsum_F[1:], 0.0])
     print(cumsum_F)
     
-    new_idx = -1*np.zeros(2).astype(int)
-    r = np.random.uniform(size=[2])
+    new_idx = -1*np.zeros(P).astype(int)
+    r = np.random.uniform(size=[P])
     print(r)
     for i in range(len(r)):
         for j in range(len(cumsum_F)):
@@ -36,7 +37,8 @@ def selection(X, F):
                 break
     
     print(new_idx)
-    p1, p2 = X[new_idx]
+    p1 = X[new_idx][:int(P/2)]
+    p2 = X[new_idx][int(P/2):]
     
     return p1, p2
 
@@ -48,6 +50,5 @@ D = 5
 X = np.random.randint(low=0, high=30, size=[P, D])
 F = fitness(X)
 
-for k in range(0, P, 2):
-    # 選擇
-    p1, p2 = selection(X, F)
+# 選擇
+p1, p2 = selection(X, F)

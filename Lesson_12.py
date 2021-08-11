@@ -6,7 +6,7 @@ Created on Tue Aug 10 18:42:00 2021
 """
 
 # =============================================================================
-# #適應值計算+選擇+交配(沒有迴圈)
+# #適應值計算+選擇+交配+突變(沒有迴圈)
 # =============================================================================
 
 import numpy as np
@@ -80,10 +80,23 @@ def crossover(p1, p2, pc, species='single_point'):
     
     return c1, c2
 
+def mutation(c1, pm, lb, ub):
+    P = c1.shape[0]
+    D = c1.shape[1]
+    
+    for i in range(P):
+        for j in range(D):
+            r = np.random.uniform()
+            if r<=pm:
+                c1[i, j] = np.random.randint(low=lb[j], high=ub[j])
+    
+    return c1
+
 # 參數設定
 P = 10
 D = 5
 pc = 0.5
+pm = 0.5
 lb = -10*np.ones(D)
 ub = 10*np.ones(D)
 
@@ -96,3 +109,7 @@ p1, p2 = selection(X, F)
 
 # 交配
 c1, c2 = crossover(p1, p2, pc, 'single_point')
+
+# 突變
+c1 = mutation(c1, pm, lb, ub)
+c2 = mutation(c2, pm, lb, ub)
