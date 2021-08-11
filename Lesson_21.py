@@ -6,7 +6,6 @@ Created on Tue Aug 10 18:42:00 2021
 """
 
 # =============================================================================
-# 完成體
 # x in [-100, 100]
 # 最大化問題的最佳適應值為-10000*D；最小化問題的最佳適應值為0
 # =============================================================================
@@ -97,12 +96,10 @@ def crossover(p1, p2, pc, species='single_point'):
         else:
             c2[i] = p2[i]
     
-    if sum(sum(np.abs(c1)>100)+sum(np.abs(c2)>100)):
-        print(123)
-    
     return c1, c2
 
 def mutation(c1, pm, lb, ub):
+    # uniform mutation
     P = c1.shape[0]
     D = c1.shape[1]
     
@@ -131,7 +128,7 @@ def elitism(X, F, new_X, new_F, er):
 #%% 參數設定
 P = 20 # 一定要偶數
 D = 2
-G = 100
+G = 50
 pc = 0.85
 pm = 0.01
 er = 0.05

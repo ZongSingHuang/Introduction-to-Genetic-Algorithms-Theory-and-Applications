@@ -6,9 +6,8 @@ Created on Tue Aug 10 18:42:00 2021
 """
 
 # =============================================================================
-# 完成體
 # x in {0, 1}
-# 最大化問題的最佳適應值為1/D；最小化問題的最佳適應值為0
+# 最大化問題的最佳適應值為-D；最小化問題的最佳適應值為0
 # =============================================================================
 
 import numpy as np
@@ -22,7 +21,7 @@ def fitness(X):
     F = np.sum(X**2, axis=1).astype(float)
 # =============================================================================
     # # 求max problem
-    # F = -1* F
+    # F = -1*F
 # =============================================================================
     
     return F
@@ -95,6 +94,7 @@ def crossover(p1, p2, pc, species='single_point'):
     return c1, c2
 
 def mutation(c1, pm, lb, ub):
+    # Bit Flip
     P = c1.shape[0]
     D = c1.shape[1]
     
@@ -102,7 +102,7 @@ def mutation(c1, pm, lb, ub):
         for j in range(D):
             r = np.random.uniform()
             if r<=pm:
-                c1[i, j] = np.random.randint(low=lb[j], high=ub[j]+1)
+                c1[i, j] = np.abs(c1[i, j]-1)
     
     return c1
 
@@ -131,7 +131,7 @@ lb = 0*np.ones(D)
 ub = 1*np.ones(D)
 
 #%% 初始化
-X = np.random.randint(low=lb, high=ub+1, size=[P, D])
+X = np.random.choice(2, size=[P, D])
 gbest_X = np.zeros(D)
 gbest_F = np.inf
 loss_curve = np.zeros(G)
