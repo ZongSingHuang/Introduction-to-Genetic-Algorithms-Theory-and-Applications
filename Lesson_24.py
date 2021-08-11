@@ -15,15 +15,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def fitness(X):
-    # Sphere
+    # GearTrain
     if X.ndim==1:
         X = X.reshape(1, -1)
         
-    F = np.sum(X**2, axis=1).astype(float)
-# =============================================================================
-    # 求max problem
-    F = -1*F
-# =============================================================================
+    P = X.shape[0]
+    F = np.zeros(P)
+    
+    x1 = np.packbits(X[:, 0:4], bitorder='little', axis=1)
+    x2 = np.packbits(X[:, 4:8], bitorder='little', axis=1)
+    x3 = np.packbits(X[:, 8:12], bitorder='little', axis=1)
+    x4 = np.packbits(X[:, 12:16], bitorder='little', axis=1)
+    
+    for i in range(P):
+        if x1[i]==0 or x4[i]==0:
+            F[i] = 9999
+        else:
+            F[i] = ( 1/6.931 - (x3[i]*x2[i])/(x1[i]*x4[i]) )**2
     
     return F
 
@@ -97,12 +105,10 @@ def crossover(p1, p2, pc, species='single_point'):
         else:
             c2[i] = p2[i]
     
-    if sum(sum(np.abs(c1)>100)+sum(np.abs(c2)>100)):
-        print(123)
-    
     return c1, c2
 
 def mutation(c1, pm, lb, ub):
+    # Bit Flip
     P = c1.shape[0]
     D = c1.shape[1]
     
@@ -110,7 +116,7 @@ def mutation(c1, pm, lb, ub):
         for j in range(D):
             r = np.random.uniform()
             if r<=pm:
-                c1[i, j] = np.random.uniform(low=lb[j], high=ub[j])
+                c1[i, j] = np.abs(c1[i, j]-1)
     
     return c1
 
@@ -129,17 +135,17 @@ def elitism(X, F, new_X, new_F, er):
     return new_X2, new_F2
 
 #%% 參數設定
-P = 20 # 一定要偶數
-D = 2
-G = 100
+P = 30 # 一定要偶數
+D = 16
+G = 500
 pc = 0.85
 pm = 0.01
-er = 0.05
-lb = -100*np.ones(D)
-ub = 100*np.ones(D)
+er = 0.2
+lb = 0*np.ones(D)
+ub = 1*np.ones(D)
 
 #%% 初始化
-X = np.random.uniform(low=lb, high=ub, size=[P, D])
+X = np.random.choice(2, size=[P, D])
 gbest_X = np.zeros(D)
 gbest_F = np.inf
 loss_curve = np.zeros(G)
@@ -164,7 +170,7 @@ for g in range(G):
     p1, p2 = selection(X, F)
     
     # 交配
-    c1, c2 = crossover(p1, p2, pc, 'whole_arithmetic')
+    c1, c2 = crossover(p1, p2, pc, 'single_point')
     
     # 突變
     c1 = mutation(c1, pm, lb, ub)
