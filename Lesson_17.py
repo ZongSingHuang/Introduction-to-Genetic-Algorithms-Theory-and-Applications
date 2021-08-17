@@ -145,7 +145,7 @@ for g in range(G):
     # 適應值計算
     F = fitness(X)
     
-    # 更新
+    # 更新F
     if F.min()<gbest_F:
         best_idx = np.argmin(F)
         gbest_X = X[best_idx]
@@ -161,6 +161,8 @@ for g in range(G):
     # 突變
     c1 = mutation(c1, pm, lb, ub)
     c2 = mutation(c2, pm, lb, ub)
+    
+    # 更新X
     new_X = np.vstack([c1, c2])
     np.random.shuffle(new_X)
     
