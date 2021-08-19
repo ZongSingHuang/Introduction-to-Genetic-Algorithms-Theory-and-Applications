@@ -152,14 +152,14 @@ lb = -100*np.ones(D)
 ub = 100*np.ones(D)
 
 #%% 初始化
+# 若P不是偶數，則進行修正
+if P%2!=0:
+    P = 2 * (P//2)
+    
 X = np.random.uniform(low=lb, high=ub, size=[P, D])
 gbest_X = np.zeros(D)
 gbest_F = np.inf
 loss_curve = np.zeros(G)
-
-# 若P不是偶數，則進行修正
-if P%2!=0:
-    P = 2 * (P//2)
     
 #%% 迭代
 # 適應值計算
