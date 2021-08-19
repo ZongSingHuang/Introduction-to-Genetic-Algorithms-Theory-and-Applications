@@ -11,7 +11,7 @@ https://www.udemy.com/course/geneticalgorithm/
 
 4. GA適合用來解決組合問題、二進制問題、離散問題；雖然GA號稱萬能演算法，但連續空間問題的求解精度真的很爛，從許多paper在跑CEC 2005時都沒有把GA做為比較對象這點就可以佐證
 
-5. 自己多加了一個叫做移民策略的運算元，有興趣的朋友可以看https://doi.ieeecomputersociety.org/10.1109/TAI.1991.167032
+5. 自己多加了一個叫做移民策略(Immigration)的運算元，有興趣的朋友可以看https://doi.ieeecomputersociety.org/10.1109/TAI.1991.167032
 
 ------------------------------------
 
