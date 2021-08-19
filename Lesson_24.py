@@ -139,12 +139,16 @@ def immigrant(new_X, new_F, ir, lb, ub):
     immigrant_size = int(P*er)
     
     if immigrant_size>0:
-        immigrant_X = np.random.choice(2, size=[immigrant_size, D])
-        immigrant_F = fitness(immigrant_X)
-        idx = np.argsort(new_F)
-        worst_idx = idx[-immigrant_size:]
-        new_X[worst_idx] = immigrant_X
-        new_F[worst_idx] = immigrant_F
+        
+        for i in range(immigrant_size):
+            immigrant_X = np.random.choice(2, size=[1, D])
+            immigrant_F = fitness(immigrant_X)
+            
+            if immigrant_F<new_F.mean():
+                idx = np.argsort(new_F)
+                worst_idx = idx[-1]
+                new_X[worst_idx] = immigrant_X
+                new_F[worst_idx] = immigrant_F
     
     return new_X, new_F
 
