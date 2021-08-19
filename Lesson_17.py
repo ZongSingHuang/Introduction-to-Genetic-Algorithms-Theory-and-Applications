@@ -109,16 +109,22 @@ def mutation(c1, pm, lb, ub):
 def elitism(X, F, new_X, new_F, er):
     P = X.shape[0]
     elitism_size = int(P*er)
-    new_X2 = new_X.copy()
-    new_F2 = new_F.copy()
     
     if elitism_size>0:
         idx = np.argsort(F)
         elitism_idx = idx[:elitism_size]
-        new_X2[:elitism_size] = X[elitism_idx]
-        new_F2[:elitism_size] = F[elitism_idx]
+        elite_X = X[elitism_idx]
+        elite_F = F[elitism_idx]
+        
+        for i in range(elitism_size):
+            
+            if elite_F[i]<new_F.mean():
+                idx = np.argsort(new_F)
+                worst_idx = idx[-1]
+                new_X[worst_idx] = elite_X[i]
+                new_F[worst_idx] = elite_F[i]
     
-    return new_X2, new_F2
+    return new_X, new_F
 
 def immigrant(new_X, new_F, ir, lb, ub):
     P = new_X.shape[0]
