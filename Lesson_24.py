@@ -120,8 +120,8 @@ def mutation(c1, pm, lb, ub):
     return c1
 
 def elitism(X, F, new_X, new_F, er):
-    M = X.shape[0]
-    elitism_size = int(M*er)
+    P = X.shape[0]
+    elitism_size = int(P*er)
     new_X2 = new_X.copy()
     new_F2 = new_F.copy()
     
@@ -133,6 +133,21 @@ def elitism(X, F, new_X, new_F, er):
     
     return new_X2, new_F2
 
+def immigrant(new_X, new_F, ir, lb, ub):
+    P = new_X.shape[0]
+    D = new_X.shape[1]
+    immigrant_size = int(P*er)
+    
+    if immigrant_size>0:
+        immigrant_X = np.random.choice(2, size=[immigrant_size, D])
+        immigrant_F = fitness(immigrant_X)
+        idx = np.argsort(new_F)
+        worst_idx = idx[-immigrant_size:]
+        new_X[worst_idx] = immigrant_X
+        new_F[worst_idx] = immigrant_F
+    
+    return new_X, new_F
+
 #%% 參數設定
 P = 30 # 一定要偶數
 D = 16
@@ -140,6 +155,7 @@ G = 500
 pc = 0.85
 pm = 0.01
 er = 0.2
+ir = 0.2
 lb = 0*np.ones(D)
 ub = 1*np.ones(D)
 
@@ -154,10 +170,10 @@ if P%2!=0:
     P = 2 * (P//2)
     
 #%% 迭代
+# 適應值計算
+F = fitness(X)
+
 for g in range(G):
-    # 適應值計算
-    F = fitness(X)
-    
     # 更新F
     if F.min()<gbest_F:
         best_idx = np.argmin(F)
@@ -185,7 +201,11 @@ for g in range(G):
     # 菁英
     new_X, new_F = elitism(X, F, new_X, new_F, er)
     
+    # 移民
+    new_X, new_F = immigrant(new_X, new_F, ir, lb, ub)
+    
     X = new_X.copy()
+    F = new_F.copy()
     
 #%% 作畫
 plt.figure()
